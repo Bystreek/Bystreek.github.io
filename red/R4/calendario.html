@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" type="text/css" href="../../css/estilos.css">
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Calistoga&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" crossorigin="anonymous" referrerpolicy="no-referrer" /><link href='lib/main.css' rel='stylesheet' />
+<script src='lib/main.js'></script>
+<script>
+
+  document.addEventListener('DOMContentLoaded', function() {
+    var initialTimeZone = 'local';
+    var timeZoneSelectorEl = document.getElementById('time-zone-selector');
+    var loadingEl = document.getElementById('loading');
+    var calendarEl = document.getElementById('calendar');
+
+
+    var calendar = new FullCalendar.Calendar(calendarEl, {
+      timeZone: initialTimeZone,
+      headerToolbar: {
+        left: 'prev,next today',
+        center: 'title',
+        right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
+      },
+      initialDate: '2022-06-01',
+      navLinks: true, // can click day/week names to navigate views
+      editable: true,
+      selectable: true,
+      dayMaxEvents: true, // allow "more" link when too many events
+      events: {
+        url: 'php/get-events.php',
+        failure: function() {
+          document.getElementById('script-warning').style.display = 'inline'; // show
+        }
+      },
+      loading: function(bool) {
+        if (bool) {
+          loadingEl.style.display = 'inline'; // show
+        } else {
+          loadingEl.style.display = 'none'; // hide
+        }
+      },
+
+      eventTimeFormat: { hour: 'numeric', minute: '2-digit', timeZoneName: 'short' },
+
+      dateClick: function(arg) {
+        console.log('dateClick', calendar.formatIso(arg.date));
+      },
+      select: function(arg) {
+        console.log('select', calendar.formatIso(arg.start), calendar.formatIso(arg.end));
+      }
+    });
+
+    calendar.render();
+    calendar.setOption('locale','Es');
+
+    // load the list of available timezones, build the <select> options
+    // it's HIGHLY recommended to use a different library for network requests, not this internal util func
+    FullCalendar.requestJson('GET', 'php/get-time-zones.php', {}, function(timeZones) {
+
+      timeZones.forEach(function(timeZone) {
+        var optionEl;
+
+        if (timeZone !== 'UTC') { // UTC is already in the list
+          optionEl = document.createElement('option');
+          optionEl.value = timeZone;
+          optionEl.innerText = timeZone;
+          timeZoneSelectorEl.appendChild(optionEl);
+        }
+      });
+    }, function() {
+      // TODO: handle error
+    });
+
+    // when the timezone selector changes, dynamically change the calendar option
+    timeZoneSelectorEl.addEventListener('change', function() {
+      calendar.setOption('timeZone', this.value);
+    });
+  });
+
+</script>
+<style>
+
+  #top {
+  	color: white;
+  	margin-top: 5px;
+    background-image: linear-gradient(to right top, #000000,#262626, #000000);
+    border-bottom: 1px solid #ddd;
+    padding: 0 10px;
+    line-height: 40px;
+    font-size: 12px;
+  }
+  .left { float: left }
+  .right { float: right }
+  .clear { clear: both }
+
+  #script-warning, #loading { display: none }
+  #script-warning { font-weight: bold; color: red }
+
+  #calendar {
+    max-width: 1100px;
+    margin: 40px auto;
+    padding: 0 10px;
+  }
+
+  .tzo {
+    color: #000;
+  }
+
+</style>
+	
+	<title>NicoNi | Calendario</title>
+</head>
+<body>
+	<header></header>
+	<span class="nav-bar" id="btnMenu"><i class="fa-solid fa-bars"></i>&nbsp MENU</span>
+	<nav class="main-nav">
+	<img src="../../img/Icon.png" class="logo">
+	<ul class="menu" id="menu">
+		<li class="menu__item"><a href="../../index.html" class="menu__link">Inicio</i></a></li>
+		<li class="menu__item container-submenu">
+			<a href="#" class="menu__link submenu-btn">Servicios<i class="fa-solid fa-angle-down"></i></a>
+			<ul class="submenu">
+				<li class="menu__item"><a href="../foro.html" class="menu__link"><i class="fa-solid fa-newspaper"></i>&nbspForo</a></li>
+				<li class="menu__item"><a href="../tienda.html" class="menu__link"><i class="fa-solid fa-store"></i>&nbspTienda</a></li>
+				<li class="menu__item"><a href="../R3/soporte.html" class="menu__link"><i class="fa-solid fa-screwdriver-wrench"></i>&nbspSoporte</a></li>
+				<li class="menu__item"><a href="calendario.html" class="menu__link"><i class="fa-regular fa-calendar-days"></i>&nbspCalendario</a></li>
+			</ul>
+		</li>
+		<li class="menu__item"><a href="" class="menu__link">Noticias</i></a></li>
+		<li class="menu__item container-submenu">
+			<a href="#" class="menu__link submenu-btn">Ingreso<i class="fa-solid fa-angle-down"></i></a>
+			<ul class="submenu">
+				<li class="menu__item"><a href="../ingreso.html" class="menu__link"><i class="fa-solid fa-user"></i>&nbspIniciar sesion</a></li>
+				<li class="menu__item"><a href="../registro.html" class="menu__link"><i class="fa-solid fa-user-pen"></i>&nbspRegistro</a></li>
+		</li>
+
+	</ul>
+</nav>
+<script type="text/javascript" src="../js/menu.js"></script>
+	<div id='top'>
+
+    <div class='left'>
+      Timezone:
+      <select id='time-zone-selector'>
+        <option value='local' selected>local</option>
+        <option value='UTC'>UTC</option>
+      </select>
+    </div>
+
+    <div class='right'>
+      <span id='loading'>loading...</span>
+      <span id='script-warning'><code>php/get-events.php</code> must be running.</span>
+    </div>
+
+    <div class='clear'></div>
+
+  </div>
+
+  <div id='calendar'></div>
+</body>
+</html>
