@@ -15,9 +15,8 @@ margin: 0;
 background-image: var(--display--background);
 background-attachment: fixed;
 background-repeat: no-repeat;
-
-
 }
+
 a{
 cursor: url(../img/cursor2.png), auto;
 }
@@ -43,7 +42,8 @@ display: none;
 
 
 .nav-bar{
-
+font-family: 'Calistoga', cursive;
+text-shadow: 1px 1px black;
 background-image: var(--display--color);
 padding: 20px;
 display: block;
@@ -69,7 +69,8 @@ filter: drop-shadow(1px 2px 4px white);
 
 
 .menu, .submenu{
-
+font-family: 'Calistoga', cursive;
+text-shadow: 1px 1px black;
 list-style: none;	
 padding: 0;
 margin: 0;
@@ -145,7 +146,7 @@ position: relative;
 .submenu{
 position: absolute;
 top: 62px;
-width: 190px;
+width: 210px;
 padding-right: 20px;
 overflow: visible;
 z-index: 999;
